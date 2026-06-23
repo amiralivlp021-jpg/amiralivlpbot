@@ -1,6 +1,12 @@
 import asyncio
 from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    filters,
+)
 
 TOKEN = "8746235673:AAEIf0rUGBdSsxtrGLj9J-h2M8Wtg5_FoN4"
 
@@ -9,22 +15,51 @@ keyboard = [
     ["سفارش"]
 ]
 
-reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+reply_markup = ReplyKeyboardMarkup(
+    keyboard,
+    resize_keyboard=True
+)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "سلام 👋\nبه ربات خوش اومدی.",
+        "سلام 👋\n"
+        "به ربات خوش اومدی.\n"
+        "یکی از گزینه‌های زیر را انتخاب کن:",
         reply_markup=reply_markup
     )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(update.message.text)
+    text = update.message.text
+
+    if text == "درباره ما":
+        await update.message.reply_text(
+            "🌹 درباره ما\n\n"
+            "ما یک مجموعه خدماتی هستیم و آماده ارائه خدمات به شما هستیم."
+        )
+
+    elif text == "تماس با ما":
+        await update.message.reply_text(
+            "📞 شماره تماس: 0912XXXXXXX\n"
+            "🆔 تلگرام: @yourid"
+        )
+
+    elif text == "سفارش":
+        await update.message.reply_text(
+            "📝 لطفاً سفارش یا درخواست خود را ارسال کنید."
+        )
+
+    else:
+        await update.message.reply_text(
+            f"✅ پیام شما دریافت شد:\n\n{text}"
+        )
 
 async def main():
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(
+        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+    )
 
     print("ربات روشن شد...")
 
